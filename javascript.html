@@ -1,0 +1,38 @@
+<script>
+  // Saat halaman dimuat, panggil fungsi di Google Apps Script (Code.gs)
+  window.onload = function() {
+      google.script.run
+          .withSuccessHandler(renderDashboard) // Jika sukses, jalankan renderDashboard
+          .getDashboardData(); // Panggil fungsi ini di backend
+  };
+
+  // Fungsi untuk menampilkan data ke HTML
+  function renderDashboard(data) {
+      // Sembunyikan loading, tampilkan konten
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('dashboard-content').style.display = 'block';
+      
+      // Isi angka ke dalam Card
+      document.getElementById('stat-pengurus').innerText = data.pengurus;
+      document.getElementById('stat-program').innerText = data.program;
+      document.getElementById('stat-kas').innerText = data.kas;
+      document.getElementById('stat-agenda').innerText = data.agenda;
+
+      // Render Grafik menggunakan Chart.js
+      const ctx = document.getElementById('myChart').getContext('2d');
+      new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: data.grafikLabel,
+              datasets: [{
+                  label: 'Program Kerja Selesai',
+                  data: data.grafikData,
+                  backgroundColor: 'rgba(13, 110, 253, 0.5)',
+                  borderColor: 'rgba(13, 110, 253, 1)',
+                  borderWidth: 1
+              }]
+          },
+          options: { responsive: true }
+      });
+  }
+</script>
